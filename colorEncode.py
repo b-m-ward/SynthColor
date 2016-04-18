@@ -1,3 +1,5 @@
+#python34
+
 import random
 from PIL import Image
 import os
