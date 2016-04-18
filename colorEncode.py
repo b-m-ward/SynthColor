@@ -6,6 +6,8 @@ import os
 
 RGB = [i for i in range(256) if i % 9 == 0]
 
+#dave
+
 encoded = []
 tableau = []
 pixelated = []
