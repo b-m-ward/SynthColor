@@ -1,4 +1,4 @@
-#python34
+#! python34
 
 import random
 from PIL import Image

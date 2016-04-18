@@ -1,8 +1,8 @@
-#python34
+#! python34
 
 import random
 from PIL import Image
-import os
+import os, sys
 
 RGB = [i for i in range(256) if i % 9 == 0]
 
