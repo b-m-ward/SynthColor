@@ -1,56 +1,53 @@
 import random
 from PIL import Image
 import os, sys
-
+import datetime
 
 class Encoder(object):
     def __init__(self):
-        self.encoded = []
-        self.tableau = []
-        self.pixelated = []
-        self.EncodedKeys = {}
-        self.Alphabet = ' abcdefghijklmnopqrstuvwxyz'
-        self.rgb = [i for i in range(256) if i % 9 == 0]
+        self.Encoded = [] # List holding the input message characters encoded to RGB values
+        self.Pixels = [] # List of Tuples, each tuple representing a pixel for the final Image
+        self.EncodedKeys = {} # DIctionary of Key(alphanumeric) Values(RGB representation) for encoding input... THE CIPHER
+        self.Alphabet = ' abcdefghijklmnopqrstuvwxyz.,()-'
+        self.fileName = str(datetime.date.today()) + "-" + str(random.randint(1,100)) + ".png"
+        self.buildList()
 
-    # build out a dictionary for all the characters in self.Alphabet
-    # and their corresponding rgb values
+    # build out a dictionary for all the characters in self.Alphabet and their corresponding rgb values
     def buildList(self):
-        # loop over the alphabet provided and create an RGB value for each character
-        byteValues = map(ord, self.Alphabet)
+        byteValues = list(map(ord, self.Alphabet))
         for i in self.Alphabet:
-            self.EncodedKeys[i] = byteValues[i]
-            # store the byte value as int in dict
+            self.EncodedKeys[i] = byteValues[self.Alphabet.index(i)]
+            # TODO: could write a randomization algo here to make the byte value something based off of a key
+            #ex self.EncodedKeys[i] = self.randomizeByte(byteValues[self.Alphabet.index(i)])
 
+    # take a message from the user and encode it with the encoding keys.
+    def encodeMessage(self,msg):
+        for i in msg.lower():
+            self.Encoded.append(self.EncodedKeys[i])
 
-    # take a message from the user and encode it.
-    def encode(self,msg):
-        message = msg
-        for i in message:
-            for x in self.Alphabet:
-                if i == x:
-                    self.encoded.append(self.Alphabet.index(x)*9)
+        # we break off the encoded values into tuples of 3 so the Encoded list needs x%3==0 to be true for pixel processing
+        while(len(self.Encoded)%3 != 0):
+            self.Encoded.append(255)
 
-        for i in self.encoded:
-            self.tableau.append(random.randint(i, i+8))
-        self.convert()
-        self.pixelate()
+    def buildPixels(self):
+        index = 0
+        for i in range(len(self.Encoded)//3):
+            self.Pixels.append((self.Encoded[i], self.Encoded[i+1], self.Encoded[i+2], 150))
+            counter = index + 3
 
-    def convert(self):
-        while len(self.tableau) % 4 != 0:
-            self.tableau.append(0)
+    def buildCanvasBlock(self):
+        dimension = len(self.Pixels)
+        self.canvas = Image.new('RGBA', (dimension,dimension))
+        for x in range(dimension):
+            for y in range(dimension):
+                self.canvas.putpixel((x,y), self.Pixels[x])
 
-    def pixelate(self):
-        counter = 0
-        for i in range(len(self.tableau)//4):
-            pixel_set = (self.tableau[counter], self.tableau[counter+1], self.tableau[counter+2], self.tableau[counter+3])
-            self.pixelated.append(pixel_set)
-            counter = counter + 4
+    def buildCanvas(self):
+        self.canvas = Image.new('RGBA', (1, len(self.Pixels)))
+        for x in range(len(self.Pixels)):
+            self.canvas.putpixel((0,x), self.Pixels[x])
 
     def save(self):
-        canvas = Image.new('RGBA', (1, len(self.pixelated)))
-        for x in range(len(self.pixelated)):
-            canvas.putpixel((0,x), self.pixelated[x])
-        file_name = input('Name your file: ')
-        canvas.save('Images/'+file_name + '.png')
-        print('Saving file ', file_name + '.png')
-        os.system("start Images/"+file_name+".png")
+        print('Saving file ', self.fileName)
+        self.canvas.save('Images/' + self.fileName)
+        os.system("start Images/" + self.fileName)
