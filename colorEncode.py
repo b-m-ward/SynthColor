@@ -40,13 +40,13 @@ def pixelate():
 convert()
 pixelate()
 
-##create canvas
+#create canvas
 canvas = Image.new('RGBA', (1, len(pixelated)))
 
 for x in range(len(pixelated)):
     canvas.putpixel((0,x), pixelated[x])
 
 file_name = input('Name your file: ')
-canvas.save('c:/projects/SynthColor/images/'+ file_name + '.png')
+canvas.save('Images/'+file_name + '.png')
 print('Saving file ', file_name + '.png')
-os.system("start "+'C:/projects/SynthColor/images/{}'.format(file_name+".png"))
+os.system("start Images/"+file_name+".png")
