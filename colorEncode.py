@@ -1,8 +1,8 @@
-#python34
+#! python34
 
 import random
 from PIL import Image
-import os
+import os, sys
 
 RGB = [i for i in range(256) if i % 9 == 0]
 
@@ -20,7 +20,7 @@ for i in message:
     for x in Alpha:
         if i == x:
             encoded.append(Alpha.index(x)*9)
-        
+
 for i in encoded:
     tableau.append(random.randint(i, i+8))
 
@@ -36,7 +36,7 @@ def pixelate():
 ##        print(pixel_set)
         pixelated.append(pixel_set)
         counter = counter + 4
-    
+
 convert()
 pixelate()
 
@@ -47,6 +47,6 @@ for x in range(len(pixelated)):
     canvas.putpixel((0,x), pixelated[x])
 
 file_name = input('Name your file: ')
-canvas.save(file_name + '.png')
+canvas.save('c:/projects/SynthColor/images/'+ file_name + '.png')
 print('Saving file ', file_name + '.png')
-os.system("start "+'C:\projects\SynthColor\{}'.format(file_name+".png"))
+os.system("start "+'C:/projects/SynthColor/images/{}'.format(file_name+".png"))
