@@ -1,6 +1,7 @@
 import random
 from PIL import Image
 import os, sys
+import bisect
 
 
 class Encoder(object):
@@ -43,3 +44,24 @@ class Encoder(object):
         canvas.save('Images/'+file_name + '.png')
         print('Saving file ', file_name + '.png')
         os.system("start Images/"+file_name+".png")
+
+    def decode(self):
+        rgb = self.rgb
+        alpha = self.alpha
+        tableau = self.tableau
+        pixelated = self.pixelated
+        fileToDecode = input('enter file name: ')
+        enIm = Image.open("Images/"+fileToDecode+".png")
+        width = enIm.size[0] - 1
+        height = enIm.size[1]
+        for hpixel in range(height):
+            item = enIm.getpixel((0, hpixel))
+            for i in item:
+        ##        if i != 255: #remove this if statement to leave alpha values in tact
+                tableau.append(i)
+        def parse(score, breakpoints=rgb, grades=alpha):
+            i = bisect.bisect(breakpoints, score)
+            return grades[i-1]
+        decoded = [parse(score) for score in tableau]
+        decMsg = ''.join(decoded)
+        print(decMsg)
