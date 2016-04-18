@@ -16,7 +16,9 @@ pixelated = []
 
 Alpha = ' abcdefghijklmnopqrstuvwxyz'
 
-enIm = Image.open('etc.png')
+fileToDecode = input('enter file name.')
+
+enIm = Image.open("Images/"+fileToDecode+".png")
 
 ##set bounds
 width = enIm.size[0] - 1
