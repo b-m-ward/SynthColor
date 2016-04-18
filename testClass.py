@@ -8,16 +8,27 @@ class Encoder(object):
         self.encoded = []
         self.tableau = []
         self.pixelated = []
-        self.alpha = ' abcdefghijklmnopqrstuvwxyz'
+        self.EncodedKeys = {}
+        self.Alphabet = ' abcdefghijklmnopqrstuvwxyz'
         self.rgb = [i for i in range(256) if i % 9 == 0]
 
-    # take input and encode it.
+    # build out a dictionary for all the characters in self.Alphabet
+    # and their corresponding rgb values
+    def buildList(self):
+        # loop over the alphabet provided and create an RGB value for each character
+        byteValues = map(ord, self.Alphabet)
+        for i in self.Alphabet:
+            self.EncodedKeys[i] = byteValues[i]
+            # store the byte value as int in dict
+
+
+    # take a message from the user and encode it.
     def encode(self,msg):
         message = msg
         for i in message:
-            for x in self.alpha:
+            for x in self.Alphabet:
                 if i == x:
-                    self.encoded.append(self.alpha.index(x)*9)
+                    self.encoded.append(self.Alphabet.index(x)*9)
 
         for i in self.encoded:
             self.tableau.append(random.randint(i, i+8))
