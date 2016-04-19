@@ -37,7 +37,7 @@ class Encoder(object):
             counter = counter + 4
 
     def open(self):
-        item = open('testDoc.txt', mode='r')
+        item = open('alad10.txt', mode='r')
         encoded = self.encoded
         for line in item:
             for x in line:
@@ -107,7 +107,7 @@ class Ribbon(object):
             counter = counter + 4
 
     def open(self):
-        item = open('testDoc.txt', mode='r')
+        item = open('alad10.txt', mode='r')
         encoded = self.encoded
         for line in item:
             for x in line:
@@ -130,6 +130,16 @@ class Ribbon(object):
         print('Saving file ', file_name + '.png')
         #os.system("start Images/"+file_name+".png")
 
+    def savecube(self): ##creates ribbons
+        canvas = Image.new('RGBA', (len(self.pixelated), len(self.pixelated)))
+        for x in range(len(self.pixelated)):
+            for y in range(len(self.pixelated)):
+                canvas.putpixel((x,y), self.pixelated[x])
+        file_name = input('Save cube file: ')
+        canvas.save('Images/'+file_name + '.png')
+        print('Saving file ', file_name + '.png')
+        #os.system("start Images/"+file_name+".png")
+
     def decode(self):
         rgb = self.rgb
         alpha = self.alpha
@@ -146,6 +156,5 @@ class Ribbon(object):
 class lang(Ribbon):
     """Encodes by averaging each word into one pixel"""
     super.__init__
-
     def encodelang(msg):
         super.encode()
