@@ -10,7 +10,7 @@ class Encoder(object):
         self.Encoded = [] # List holding the input message characters encoded to RGB values
         self.Pixels = [] # List of Tuples, each tuple representing a pixel for the final Image
         self.EncodedKeys = {} # DIctionary of Key(alphanumeric) Values(RGB representation) for encoding input... THE CIPHER
-        self.Alphabet = ' abcdefghijklmnopqrstuvwxyz.,()-:;?'
+        self.Alphabet = ' abcdefghijklmnopqrstuvwxyz.,()-:;?|1234567890![]*=/'
         self.fileName = str(datetime.date.today()) + "-" + str(random.randint(1,100)) + ".png"
         self.buildList()
 
@@ -18,7 +18,7 @@ class Encoder(object):
     def buildList(self):
         byteValues = list(map(ord, self.Alphabet))
         for i in self.Alphabet:
-            self.EncodedKeys[i] = byteValues[self.Alphabet.index(i)]
+            self.EncodedKeys[i] = byteValues[self.Alphabet.index(i)] - random.randint(0,100)
             # TODO: could write a randomization algo here to make the byte value something based off of a key
             #ex self.EncodedKeys[i] = self.randomizeByte(byteValues[self.Alphabet.index(i)])
 
