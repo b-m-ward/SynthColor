@@ -11,6 +11,7 @@ class Encoder(object):
         self.pixelated = []
         self.alpha = ' abcdefghijklmnopqrstuvwxyz'
         self.rgb = [i for i in range(256) if i % 9 == 0]
+        self.string = ''
 
     # take input and encode it.
     def encode(self,msg):
@@ -35,6 +36,21 @@ class Encoder(object):
             pixel_set = (self.tableau[counter], self.tableau[counter+1], self.tableau[counter+2], self.tableau[counter+3])
             self.pixelated.append(pixel_set)
             counter = counter + 4
+
+    def open(self):
+        item = open('testDoc.txt', mode='r')
+        encoded = self.encoded
+        for line in item:
+            for x in line:
+                if x == '/n'
+                    print('found linebreak')
+                for letter in self.alpha:
+                    if x == letter:
+                        self.encoded.append(self.alpha.index(x)*9)
+        for i in self.encoded:
+            self.tableau.append(random.randint(i, i+8))
+        self.convert()
+        self.pixelate()
 
     def save(self):
         canvas = Image.new('RGBA', (1, len(self.pixelated)))
