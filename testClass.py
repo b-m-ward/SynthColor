@@ -14,6 +14,7 @@ class Encoder(object):
         self.fileName = str(datetime.date.today()) + "-" + str(random.randint(1,100)) + ".png"
         self.buildList()
 
+
     # build out a dictionary for all the characters in self.Alphabet and their corresponding rgb values
     def buildList(self):
         byteValues = list(map(ord, self.Alphabet))
