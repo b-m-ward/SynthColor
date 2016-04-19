@@ -5,3 +5,4 @@ e.buildPixels()
 e.Pixels
 e.buildCanvasBlock()
 e.save()
+e.decode()
