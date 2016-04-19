@@ -55,7 +55,7 @@ class Encoder(object):
         canvas = Image.new('RGBA', (1, len(self.pixelated)))
         for x in range(len(self.pixelated)):
             canvas.putpixel((0,x), self.pixelated[x])
-        file_name = input('Name your file: ')
+        file_name = input('Name your encoded file: ')
         canvas.save('Images/'+file_name + '.png')
         print('Saving file ', file_name + '.png')
         #os.system("start Images/"+file_name+".png")
@@ -63,26 +63,17 @@ class Encoder(object):
     def decode(self):
         rgb = self.rgb
         alpha = self.alpha
-        tableau = self.tableau
-        pixelated = self.pixelated
-        fileToDecode = input('enter file name: ')
+        encoded = self.encoded
+        fileToDecode = input('enter decode file name: ')
         enIm = Image.open("Images/"+fileToDecode+".png")
-        width = enIm.size[0] - 1
-        height = enIm.size[1]
-        for hpixel in range(height):
-            item = enIm.getpixel((0, hpixel))
-            for i in item:
-        ##        if i != 255: #remove this if statement to leave alpha values in tact
-                tableau.append(i)
         def parse(score, breakpoints=rgb, grades=alpha):
             i = bisect.bisect(breakpoints, score)
             return grades[i-1]
-        decoded = [parse(score) for score in tableau]
+        decoded = [parse(score) for score in encoded]
         decMsg = ''.join(decoded)
         print(decMsg)
 
-
-class Ribbon(Encoder):
+class Ribbon(object):
     """Encodes text into a one pixel wide horizontal ribbon"""
     def __init__(self):
         self.encoded = []
@@ -134,7 +125,7 @@ class Ribbon(Encoder):
         canvas = Image.new('RGBA', (1, len(self.pixelated)))
         for x in range(len(self.pixelated)):
             canvas.putpixel((0,x), self.pixelated[x])
-        file_name = input('Name your file: ')
+        file_name = input('Save ribbon file: ')
         canvas.save('Images/'+file_name + '.png')
         print('Saving file ', file_name + '.png')
         #os.system("start Images/"+file_name+".png")
@@ -143,15 +134,8 @@ class Ribbon(Encoder):
         rgb = self.rgb
         alpha = self.alpha
         encoded = self.encoded
-        fileToDecode = input('enter file name: ')
+        fileToDecode = input('Input file name to decode: ')
         enIm = Image.open("Images/"+fileToDecode+".png")
-##        width = enIm.size[0] - 1
-##        height = enIm.size[1]
-##        for hpixel in range(height):
-##            item = enIm.getpixel((0, hpixel))
-##            for i in item:
-        ##        if i != 255: #remove this if statement to leave alpha values in tact
-##                tableau.append(i)
         def parse(score, breakpoints=rgb, grades=alpha):
             i = bisect.bisect(breakpoints, score)
             return grades[i-1]
@@ -159,8 +143,9 @@ class Ribbon(Encoder):
         decMsg = ''.join(decoded)
         print(decMsg)
 
-class lang(Encoder):
+class lang(Ribbon):
     """Encodes by averaging each word into one pixel"""
     super.__init__
 
     def encodelang(msg):
+        super.encode()
