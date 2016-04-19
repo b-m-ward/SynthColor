@@ -3,13 +3,14 @@ from PIL import Image
 import os, sys
 import datetime
 import bisect
+import math
 
 class Encoder(object):
     def __init__(self):
         self.Encoded = [] # List holding the input message characters encoded to RGB values
         self.Pixels = [] # List of Tuples, each tuple representing a pixel for the final Image
         self.EncodedKeys = {} # DIctionary of Key(alphanumeric) Values(RGB representation) for encoding input... THE CIPHER
-        self.Alphabet = ' abcdefghijklmnopqrstuvwxyz.,()-'
+        self.Alphabet = ' abcdefghijklmnopqrstuvwxyz.,()-:;?'
         self.fileName = str(datetime.date.today()) + "-" + str(random.randint(1,100)) + ".png"
         self.buildList()
 
@@ -37,31 +38,34 @@ class Encoder(object):
             counter = index + 3
 
     def buildCanvasBlock(self):
-        dimension = len(self.Pixels)
+        xval = 0
+        yval = 0
+        dimension = math.ceil(math.sqrt(len(self.Pixels)))
         self.canvas = Image.new('RGBA', (dimension,dimension))
-        for x in range(dimension):
-            for y in range(dimension):
-                self.canvas.putpixel((x,y), self.Pixels[x])
+        print('total pixels = ' + str(len(self.Pixels)))
+        print('dimension : ' + str(dimension))
+        for pixel in range(len(self.Pixels)):
+            self.canvas.putpixel((xval,yval), self.Pixels[pixel])
+            xval = xval + 1
+            if(xval == dimension):
+                yval = yval + 1
+                xval = 0
+                if(yval == dimension):
+                    yval = 0
+
 
     def buildCanvas(self):
         self.canvas = Image.new('RGBA', (1, len(self.Pixels)))
         for x in range(len(self.Pixels)):
             self.canvas.putpixel((0,x), self.Pixels[x])
 
-    def open(self):
-        item = open('testDoc.txt', mode='r')
-        encoded = self.encoded
+    def encodeFile(self, path):
+        item = open(path, mode='r')
         for line in item:
-            for x in line:
-                if x == '/n'
-                    print('found linebreak')
-                for letter in self.alpha:
-                    if x == letter:
-                        self.encoded.append(self.alpha.index(x)*9)
-        for i in self.encoded:
-            self.tableau.append(random.randint(i, i+8))
-        self.convert()
-        self.pixelate()
+            for char in line.lower():
+                if(char == "\n" or char == "'" or char == '"'):
+                    continue
+                self.Encoded.append(self.EncodedKeys[char])
 
     def save(self):
         print('Saving file ', self.fileName)
