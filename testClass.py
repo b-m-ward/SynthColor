@@ -52,7 +52,7 @@ class Encoder(object):
         self.pixelate()
 
     def save(self): ##creates ribbons
-        canvas = Image.new('RGBA', (10, len(self.pixelated)))
+        canvas = Image.new('RGBA', (1, len(self.pixelated)))
         for x in range(len(self.pixelated)):
             canvas.putpixel((0,x), self.pixelated[x])
         file_name = input('Name your file: ')
@@ -83,6 +83,7 @@ class Encoder(object):
 
 
 class Ribbon(Encoder):
+    """Encodes text into a one pixel wide horizontal ribbon"""
     def __init__(self):
         self.encoded = []
         self.tableau = []
@@ -157,3 +158,9 @@ class Ribbon(Encoder):
         decoded = [parse(score) for score in encoded]
         decMsg = ''.join(decoded)
         print(decMsg)
+
+class lang(Encoder):
+    """Encodes by averaging each word into one pixel"""
+    super.__init__
+
+    def encodelang(msg):
