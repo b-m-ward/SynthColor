@@ -34,7 +34,7 @@ class Encoder(object):
     def buildPixels(self):
         index = 0
         for i in range(len(self.Encoded)//3):
-            self.Pixels.append((self.Encoded[i], self.Encoded[i+1], self.Encoded[i+2], 150))
+            self.Pixels.append((self.Encoded[i], self.Encoded[i+1], self.Encoded[i+2], random.randint(0,255)))
             counter = index + 3
 
     def buildCanvasBlock(self):

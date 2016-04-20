@@ -1,4 +1,3 @@
-from testClass import Encoder
-e = Encoder()
-e.encode('some test message')
-e.save()
+# Encode/Decode text files into an image(.png)
+---
+#### By Bryant M. Ward and David L. Birt

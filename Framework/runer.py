@@ -1,4 +1,4 @@
-from testClass import Encoder, Ribbon, lang
+from ../Framework/testClass import Encoder, Ribbon, lang
 e = Ribbon()
 e.encode('some test message')
 e.save()
