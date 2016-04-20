@@ -80,22 +80,11 @@ class Encoder(object):
         canvas.save('Images/'+self.fileName)
         print('Saved file ', self.fileName)
 
-    def decode(self):
-        rgb = self.rgb
-        alpha = self.alpha
-        encoded = self.encoded
-        fileToDecode = input('Input file name to decode: ')
-        enIm = Image.open("Images/"+fileToDecode+".png")
-        def parse(score, breakpoints=rgb, grades=alpha):
+    def decode(self, path):
+        enIm = Image.open(path)
+        def parse(score, breakpoints=self.Encoded, grades=self.Alphabet):
             i = bisect.bisect(breakpoints, score)
             return grades[i-1]
-        decoded = [parse(score) for score in encoded]
+        decoded = [parse(score) for score in self.Encoded]
         decMsg = ''.join(decoded)
-        print(decMsg)
-
-
-"""Encodes by averaging each word into one pixel"""
-class lang(Ribbon):
-    super.__init__
-    def encodelang(msg):
-        super.encode()
+        print('Decoded Msg = ' + decMsg)

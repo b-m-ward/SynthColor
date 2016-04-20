@@ -77,16 +77,10 @@ class Ribbon(object):
         alpha = self.alpha
         encoded = self.encoded
         fileToDecode = input('Input file name to decode: ')
-        enIm = Image.open("Images/"+fileToDecode+".png")
+        enIm = Image.open("../Images/"+fileToDecode+".png")
         def parse(score, breakpoints=rgb, grades=alpha):
             i = bisect.bisect(breakpoints, score)
             return grades[i-1]
         decoded = [parse(score) for score in encoded]
         decMsg = ''.join(decoded)
         print(decMsg)
-
-class lang(Ribbon):
-    """Encodes by averaging each word into one pixel"""
-    super.__init__
-    def encodelang(msg):
-        super.encode()
