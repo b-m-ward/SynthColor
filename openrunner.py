@@ -1,7 +1,9 @@
-from testClass import Encoder
+from testClass import Encoder, Ribbon
 
 e = Encoder()
 
 e.open()
 
 e.save()
+
+e.decode()

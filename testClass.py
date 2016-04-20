@@ -14,7 +14,6 @@ class Encoder(object):
         self.fileName = str(datetime.date.today()) + "-" + str(random.randint(1,100)) + ".png"
         self.buildList()
 
-
     # build out a dictionary for all the characters in self.Alphabet and their corresponding rgb values
     def buildList(self):
         byteValues = list(map(ord, self.Alphabet))
@@ -54,7 +53,6 @@ class Encoder(object):
                 if(yval == dimension):
                     yval = 0
 
-
     def buildCanvas(self):
         self.canvas = Image.new('RGBA', (1, len(self.Pixels)))
         for x in range(len(self.Pixels)):
@@ -73,24 +71,31 @@ class Encoder(object):
         self.canvas.save('Images/' + self.fileName)
         os.system("start Images/" + self.fileName)
 
+    def savecube(self): ##creates ribbons
+        length = len(self.Pixels)
+        canvas = Image.new('RGBA', (length, length))
+        for x in range(length):
+            for y in range(length):
+                canvas.putpixel((x,y), self.Pixels[x])
+        canvas.save('Images/'+self.fileName)
+        print('Saved file ', self.fileName)
 
-    # def decode(self):
-    #     rgb = self.rgb
-    #     alpha = self.alpha
-    #     tableau = []
-    #     pixelated = self.pixelated
-    #     fileToDecode = input('enter file name: ')
-    #     enIm = Image.open("Images/"+fileToDecode+".png")
-    #     width = enIm.size[0] - 1
-    #     height = enIm.size[1]
-    #     for hpixel in range(height):
-    #         item = enIm.getpixel((0, hpixel))
-    #         for i in item:
-    #     ##        if i != 255: #remove this if statement to leave alpha values in tact
-    #             tableau.append(i)
-    #     def parse(score, breakpoints=rgb, grades=alpha):
-    #         i = bisect.bisect(breakpoints, score)
-    #         return grades[i-1]
-    #     decoded = [parse(score) for score in tableau]
-    #     decMsg = ''.join(decoded)
-    #     print(decMsg)
+    def decode(self):
+        rgb = self.rgb
+        alpha = self.alpha
+        encoded = self.encoded
+        fileToDecode = input('Input file name to decode: ')
+        enIm = Image.open("Images/"+fileToDecode+".png")
+        def parse(score, breakpoints=rgb, grades=alpha):
+            i = bisect.bisect(breakpoints, score)
+            return grades[i-1]
+        decoded = [parse(score) for score in encoded]
+        decMsg = ''.join(decoded)
+        print(decMsg)
+
+
+"""Encodes by averaging each word into one pixel"""
+class lang(Ribbon):
+    super.__init__
+    def encodelang(msg):
+        super.encode()
