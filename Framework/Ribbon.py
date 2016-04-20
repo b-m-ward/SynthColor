@@ -73,6 +73,7 @@ class Ribbon(object):
         #os.system("start Images/"+file_name+".png")
 
     def decode(self):
+        """Decode Function"""
         rgb = self.rgb
         alpha = self.alpha
         encoded = self.encoded
