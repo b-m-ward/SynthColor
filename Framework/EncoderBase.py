@@ -5,6 +5,8 @@ import datetime
 import bisect
 import math
 
+#test change
+
 class Encoder(object):
     def __init__(self):
         self.Encoded = [] # List holding the input message characters encoded to RGB values
