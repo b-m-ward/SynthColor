@@ -4,6 +4,7 @@ import os, sys
 import datetime
 import bisect
 import math
+import time
 
 class Ribbon(object):
     """Encodes text into a one pixel wide horizontal ribbon"""
@@ -13,11 +14,12 @@ class Ribbon(object):
         self.pixelated = []
         self.alpha = ' abcdefghijklmnopqrstuvwxyz'
         self.rgb = [i for i in range(256) if i % 9 == 0]
-        self.string = ''
+        self.translated = []
 
     # take input and encode it.
     def encode(self,msg):
-        message = msg
+        startTime = time.time()
+        message = msg.lower()
         for i in message:
             for x in self.alpha:
                 if i == x:
@@ -26,6 +28,8 @@ class Ribbon(object):
             self.tableau.append(random.randint(i, i+8))
         self.convert()
         self.pixelate()
+        endTime = time.time()
+        print('Seconds passed: ', startTime - endTime)
 
     def convert(self):
         while len(self.tableau) % 4 != 0:
@@ -39,7 +43,8 @@ class Ribbon(object):
             counter = counter + 4
 
     def open(self):
-        item = open('alad10.txt', mode='r')
+        startTime = time.time()
+        item = open('../TestFiles/war.txt', mode='r')
         encoded = self.encoded
         for line in item:
             for x in line:
@@ -52,8 +57,11 @@ class Ribbon(object):
             self.tableau.append(random.randint(i, i+8))
         self.convert()
         self.pixelate()
+        endTime = time.time()
+        print('Seconds passed during open: ', endTime - startTime)
 
     def save(self): ##creates ribbons
+        startTime = time.time()
         canvas = Image.new('RGBA', (1, len(self.pixelated)))
         for x in range(len(self.pixelated)):
             canvas.putpixel((0,x), self.pixelated[x])
@@ -61,23 +69,27 @@ class Ribbon(object):
         canvas.save('../Images/'+file_name + '.png')
         print('Saving file ', file_name + '.png')
         #os.system("start Images/"+file_name+".png")
+        endTime = time.time()
+        print('Time to save: ', endTime - startTime)
 
     def savecube(self): ##creates ribbons
         canvas = Image.new('RGBA', (len(self.pixelated), len(self.pixelated)))
         for x in range(len(self.pixelated)):
             for y in range(len(self.pixelated)):
-                canvas.putpixel((x,y), self.pixelated[x])
+                canvas.putpixel((y,x), self.pixelated[x])
         file_name = input('Save cube file: ')
-        canvas.save('Images/'+file_name + '.png')
+        canvas.save('../Images/'+file_name + '.png')
         print('Saving file ', file_name + '.png')
         #os.system("start Images/"+file_name+".png")
 
     def decode(self):
         """Decode Function"""
+        startTime = time.time()
         rgb = self.rgb
         alpha = self.alpha
-        tableau = self.tableau
+        translated = self.translated
         pixelated = self.pixelated
+        tableau = self.tableau
         fileToDecode = input('enter file name: ')
         enIm = Image.open("../Images/"+fileToDecode+".png")
         width = enIm.size[0] - 1
@@ -86,13 +98,15 @@ class Ribbon(object):
             item = enIm.getpixel((0, hpixel))
             for i in item:
         ##        if i != 255: #remove this if statement to leave alpha values in tact
-                tableau.append(i)
+                translated.append(i)
         def parse(score, breakpoints=rgb, grades=alpha):
             i = bisect.bisect(breakpoints, score)
             return grades[i-1]
-        decoded = [parse(score) for score in tableau]
+        decoded = [parse(score) for score in translated]
         decMsg = ''.join(decoded)
         print(decMsg)
+        endTime = time.time()
+        print('Time to decode: ', endTime - startTime)
 
 class lang(Ribbon):
     """Encodes by averaging each word into one pixel"""
