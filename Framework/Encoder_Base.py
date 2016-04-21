@@ -17,50 +17,55 @@ class Encoder(object):
         self.buildList()
         self.startTime = 0
         self.endTime = 0
+        self.decodedList = []
 
-
+    # Uitlity func for starting a timer
     def startTimer(self):
         self.startTime = time.time()
 
+    # Stop the timer and print result
     def stopTimer(self, msg):
         self.endTime = time.time()
         print('Time taken to ' + msg + ' : ' + str(self.endTime - self.startTime) + 's')
 
-    # build out a dictionary for all the characters in self.Alphabet and their corresponding rgb values
+    # Writes decoded output to the filesystem in application directory "OutputFiles"
+    def writeOutputFile(self):
+        self.startTimer()
+        num = str(random.randint(1,100))
+        fileName = "..\OutputFiles\DecodeOutput-" + num + ".txt"
+        with open(fileName,'w') as text_file:
+            text_file.write(''.join(self.decodedList))
+        self.stopTimer('write output file - ' + str(num))
+
+    # Build out a dictionary for all the characters in self.Alphabet and their corresponding rgb values
     def buildList(self):
         byteValues = list(map(ord, self.Alphabet))
         for i in self.Alphabet:
-            self.EncodedKeys[i] = byteValues[self.Alphabet.index(i)] - random.randint(0,100)
+            self.EncodedKeys[i] = byteValues[self.Alphabet.index(i)]
+
+        #build out an inverted dictionary for lookups
+        self.InverseKeys = {v:k for k,v in self.EncodedKeys.items()}
             # TODO: could write a randomization algo here to make the byte value something based off of a key
             #ex self.EncodedKeys[i] = self.randomizeByte(byteValues[self.Alphabet.index(i)])
 
-    # take a message from the user and encode it with the encoding keys.
-    def encodeMessage(self,msg):
-        self.startTimer()
-        for i in msg.lower():
-            self.Encoded.append(self.EncodedKeys[i])
-
-        # we break off the encoded values into tuples of 3 so the Encoded list needs x%3==0 to be true for pixel processing
-        while(len(self.Encoded)%3 != 0):
-            self.Encoded.append(0)
-        self.stopTimer('encoding message')
-
+    # Build a list of pixels from the encoded message values
     def buildPixels(self):
         self.startTimer()
-        index = 0
+        counter = 0
         for i in range(len(self.Encoded)//3):
-            self.Pixels.append((self.Encoded[i], self.Encoded[i+1], self.Encoded[i+2]))
-            counter = index + 3
+            self.Pixels.append((self.Encoded[counter], self.Encoded[counter+1], self.Encoded[counter+2]))
+            counter = counter + 3
         self.stopTimer('builing pixels')
 
-    def buildCanvasBlock(self):
+    # Builds out the image from encoded message
+    def buildCanvas(self):
         self.startTimer()
         xval = 0
         yval = 0
         dimension = math.ceil(math.sqrt(len(self.Pixels)))
         self.canvas = Image.new('RGB', (dimension,dimension))
-        print('total pixels = ' + str(len(self.Pixels)))
-        print('dimension : ' + str(dimension))
+        # print('total pixels = ' + str(len(self.Pixels)))
+        # print('dimension : ' + str(dimension))
         for pixel in range(len(self.Pixels)):
             self.canvas.putpixel((xval,yval), self.Pixels[pixel])
             xval = xval + 1
@@ -71,13 +76,7 @@ class Encoder(object):
                     yval = 0
         self.stopTimer('builing canvas block')
 
-    def buildCanvas(self):
-        self.startTimer()
-        self.canvas = Image.new('RGB', (1, len(self.Pixels)))
-        for x in range(len(self.Pixels)):
-            self.canvas.putpixel((0,x), self.Pixels[x])
-        self.stopTimer('builing canvas block')
-
+    # encode a file
     def encodeFile(self, path):
         self.startTimer()
         item = open(path, mode='r')
@@ -88,10 +87,21 @@ class Encoder(object):
                 self.Encoded.append(self.EncodedKeys[char])
         self.stopTimer('encoding file')
 
+    # Take a message from the user and encode it with the encoding keys.
+    def encodeMessage(self,msg):
+        self.startTimer()
+        for i in msg.lower():
+            self.Encoded.append(self.EncodedKeys[i])
+
+        # we break off the encoded values into tuples of 3 so the Encoded list needs x%3==0
+        while(len(self.Encoded)%3 != 0):
+            self.Encoded.append(0)
+        self.stopTimer('encode user input')
+
     def save(self):
-        print('Saving file ', self.fileName)
         self.canvas.save('../Images/' + self.fileName)
         os.system("start ../Images/" + self.fileName)
+        print('Saved file ', self.fileName)
 
     def savecube(self): ##creates ribbons
         length = len(self.Pixels)
@@ -99,58 +109,43 @@ class Encoder(object):
         for x in range(length):
             for y in range(length):
                 canvas.putpixel((x,y), self.Pixels[x])
+                print('Saved file ', self.fileName)
         canvas.save('../Images/'+self.fileName)
-        print('Saved file ', self.fileName)
 
-    # Given a value((R,G,B)) functions returns its characer from encoded keys
-    # def getCharacterForValue(self, val):
-        # for key in self.EncodedKeys():
-
-    def decode(self):
+    # Decodes an image one pixel at a time based on the EncodedKeys
+    def decodeMessage(self, path=None):
         xval = 0
         yval = 0
-        decodedList = []
-        img = self.canvas
-        for pixel in math.pow(i.size[1] , 2):
-            pix = img.getpixel((xval,yval))
-            #get the rgb values
-            vals = (pix[0],pix[1],pix[2])
-            for key in self.EncodedKeys():
-                if self.EncodedKeys[key] == pix[0]:
-                    decodedList.append(key)
-                if self.EncodedKeys[key] == pix[1]:
-                    decodedList.append(key)
-                if self.EncodedKeys[key] == pix[2]:
-                    decodedList.append(key)
+        self.decodedList = []
+        self.startTimer()
+
+        # if passed a path then decode the file otherwise assume we are decoding from memory
+        if path is None:
+            img = self.canvas
+        else:
+            img = Image.open(path)
+
+        for pixel in range(int(math.pow(img.size[1] , 2))):
+            #unpack the tuple into rgb values
+            r,g,b = img.getpixel((xval,yval))
+
+            # deffer processing if this pixel is a filler pixel
+            if(r == 0 and g == 0 and b == 0):
+                continue
+            #self.decodedPixels.append((r,g,b)) # here temp for debuging
+            if r in self.InverseKeys:
+                self.decodedList.append(self.InverseKeys[r])
+            if g in self.InverseKeys:
+                self.decodedList.append(self.InverseKeys[g])
+            if b in self.InverseKeys:
+                self.decodedList.append(self.InverseKeys[b])
+
             # go through the incerementation for indexers.
             xval = xval + 1
-            if(xval == dimension):
+            if(xval == int(img.size[0])):
                 yval = yval + 1
                 xval = 0
-                if(yval == dimension):
+                if(yval == int(img.size[0])):
                     yval = 0
-
-
-    def decodeMessage(self, path):
-        xval = 0
-        yval = 0
-        decodedList = []
-        img = Image.open(path)
-        for pixel in math.pow(i.size[1] , 2):
-            pix = img.getpixel((xval,yval))
-            #get the rgb values
-            vals = (pix[0],pix[1],pix[2])
-            for key in self.EncodedKeys():
-                if self.EncodedKeys[key] == pix[0]:
-                    decodedList.append(key)
-                if self.EncodedKeys[key] == pix[1]:
-                    decodedList.append(key)
-                if self.EncodedKeys[key] == pix[2]:
-                    decodedList.append(key)
-            # go through the incerementation for indexers.
-            xval = xval + 1
-            if(xval == dimension):
-                yval = yval + 1
-                xval = 0
-                if(yval == dimension):
-                    yval = 0
+        self.stopTimer('decoding image from file')
+        self.writeOutputFile()
